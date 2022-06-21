@@ -8,6 +8,14 @@ header {
     border-bottom: 2px solid #C9C9C9;
 }
 
+.title {
+    margin: 50px 0;
+}
+
+.mandatory {
+    width: 450px;
+}
+
 .user-name {
     margin-right: 20px;
     font-size: 1rem;
@@ -20,5 +28,6 @@ header {
     margin : auto;
     justify-content: center;
     align-items: center;
+    flex-direction : column;
     padding : 0 150px;
 }
