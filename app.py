@@ -1,9 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template
 from routes.sign_up import sign_up
 from routes.sign_in import sign_in
 from routes.my_page import my_page
 from routes.index import index
-
+from database import MongoDB
 
 app = Flask(__name__)
 
@@ -14,5 +14,13 @@ app.register_blueprint(sign_in)
 app.register_blueprint(index)
 
 
+@app.route('/')
+def home():
+    question_info = MongoDB().db.question.find_one({}, {'_id': False})
+
+    return render_template("index.html", question_info=question_info)
+    # return render_template('index.html')
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
+
