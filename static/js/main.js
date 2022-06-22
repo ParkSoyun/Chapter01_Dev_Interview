@@ -34,16 +34,10 @@ function get_userinfo(user){
 // });
 
 function show_question() {
-    // let token = document.cookie.split('=')[1]
-
     $.ajax({
         type: "GET",
         url: "/question",
         data: {},
-        // beforeSend: function (xhr) {
-        //     xhr.setRequestHeader("Content-type","application/json");
-        //     xhr.setRequestHeader("Authorization","JWT " + token);
-        // },
         success: function (response) {
             $('#main-box').empty()
 
@@ -134,8 +128,12 @@ function save_answer(questionNum) {
                 $('#main-box').append(question_card1)
 
                 for(let i=0; i<answer_list.length; i++) {
+                    let answer_id = answer_list[i]['_id']
                     let answer_comment = answer_list[i]['answer']
                     let like_count = answer_list[i]['like_count']
+
+                    let button_id = 'button_' + answer_id
+                    let count_id = 'count_' + answer_id
 
                     let answer_table = ``
 
@@ -145,15 +143,19 @@ function save_answer(questionNum) {
                                             <td class="my-td" id="edit_answer">
                                                 <button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>
                                             </td>
-                                            <td class="my-td">🤍</td>
-                                            <td class="my-td like-count">${like_count}</td>
+                                            <td class="my-td" id="${button_id}">
+                                                <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
+                                            </td>
+                                            <td class="my-td like-count" id="${count_id}"}>${like_count}</td>
                                         </tr>`
                     } else {
                         answer_table = `<tr>
                                             <th class="answer-comment col-md-8">${answer_comment}</th>
                                             <td class="my-td"></td>
-                                            <td class="my-td">🤍</td>
-                                            <td class="my-td like-count">${like_count}</td>
+                                            <td class="my-td" id="${button_id}">
+                                                <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
+                                            </td>
+                                            <td class="my-td like-count" id="${count_id}">${like_count}</td>
                                         </tr>`
                     }
 
@@ -191,13 +193,11 @@ function edit_answer(question_num) {
 
             let answer = response['answer_comment']
 
-            console.log(answer)
-
             let editbox = `<textarea class="form-control answer" id="answerTextarea" rows="5">${answer}</textarea>`
-            let editbutton = `<button onclick="send_new_answer(${question_num})" type="button" class="btn btn-light">수정</button>`
+            let edit_button = `<button onclick="send_new_answer(${question_num})" type="button" class="btn btn-light">수정</button>`
 
             $('#myanswer').append(editbox)
-            $('#edit_answer').append(editbutton)
+            $('#edit_answer').append(edit_button)
         }
     });
 }
@@ -221,10 +221,60 @@ function send_new_answer(question_num) {
             let answer = answer_info['answer']
 
             let editbox = `${answer}`
-            let editbutton = `<button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>`
+            let edit_button = `<button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>`
 
             $('#myanswer').append(editbox)
-            $('#edit_answer').append(editbutton)
+            $('#edit_answer').append(edit_button)
+        }
+    });
+}
+
+function like_answer(button_id, count_id, answer_id) {
+    $.ajax({
+        type: "POST",
+        url: "/answerlike",
+        data: {
+            flag: 0,
+            answer_id: answer_id
+        },
+        success: function (response) {
+            $('#'+button_id).empty()
+            $('#'+count_id).empty()
+
+            let answer_id = response['answer_id']
+            let answer_info = response['answer_info']
+            let like_count = answer_info['like_count']
+
+            let like_button = `<button onclick="like_cancel_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">❤️</button>`
+            let count = `${like_count}`
+
+            $('#'+button_id).append(like_button)
+            $('#'+count_id).append(count)
+        }
+    });
+}
+
+function like_cancel_answer(button_id, count_id, answer_id) {
+    $.ajax({
+        type: "POST",
+        url: "/answerlike",
+        data: {
+            flag: 1,
+            answer_id: answer_id
+        },
+        success: function (response) {
+            $('#'+button_id).empty()
+            $('#'+count_id).empty()
+
+            let answer_id = response['answer_id']
+            let answer_info = response['answer_info']
+            let like_count = answer_info['like_count']
+
+            let like_button = `<button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>`
+            let count = `${like_count}`
+
+            $('#'+button_id).append(like_button)
+            $('#'+count_id).append(count)
         }
     });
 }

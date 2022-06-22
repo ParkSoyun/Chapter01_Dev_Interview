@@ -1,6 +1,7 @@
 import os
 
 import jwt
+from bson import ObjectId
 from dotenv import load_dotenv
 from flask import render_template, Blueprint, jsonify, request
 
@@ -134,9 +135,11 @@ def save_answer_with_login(user_email):
 
         question_info = db.question.find_one({'num': question_num}, {'_id': False})
 
-        # answer_list = list(db.answer.find({'question_num': question_num}, {'_id': False}))
+        # temp_answer_list= list(db.answer.find({'question_num': question_num}, {'_id': False}).sort('like_count', -1))
+        temp_answer_list= list(db.answer.find({'question_num': question_num}).sort('like_count', -1))
 
-        temp_answer_list= list(db.answer.find({'question_num': question_num}, {'_id': False}).sort('like_count', -1))
+        for temp_answer in temp_answer_list:
+            temp_answer['_id'] = str(temp_answer['_id'])
 
         answer_list = list()
 
@@ -162,7 +165,7 @@ def edit_answer():
         answer_comment = request.form['answer_comment']
 
         return jsonify({'msg': '답변을 수정합니다.', 'answer_comment': answer_comment})
-    else:
+    elif flag == 1:
         token_receive = request.cookies.get('mytoken')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_email = payload['id']
@@ -176,3 +179,25 @@ def edit_answer():
 
         return jsonify({'answer_info': answer_info})
 
+
+@index.route('/answerlike', methods=["POST"])
+def like_answer():
+    flag = int(request.form['flag'])
+    answer_id = request.form['answer_id']
+
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_email = payload['id']
+
+    if flag == 0:
+        db.answer.update_one({'_id': ObjectId(answer_id)}, {'$inc': {'like_count': 1}, '$push': {'like': user_email}})
+
+        answer_info = db.answer.find_one({'_id': ObjectId(answer_id)}, {'_id': False})
+
+        return jsonify({'answer_id': answer_id, 'answer_info': answer_info})
+    elif flag == 1:
+        db.answer.update_one({'_id': ObjectId(answer_id)}, {'$inc': {'like_count': -1}, '$pull': {'like': user_email}})
+
+        answer_info = db.answer.find_one({'_id': ObjectId(answer_id)}, {'_id': False})
+
+        return jsonify({'answer_id': answer_id, 'answer_info': answer_info})
