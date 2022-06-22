@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 
 <!-- heade태그 내부 title 부분 -->
-{% block title %}My page{% endblock %}
+{% block title %}회원정보 수정{% endblock %}
 
 <!-- head 태그 부분 -->
 {% block head %}
@@ -16,5 +16,26 @@
 
 <!-- div=class"content" 부분 -->
 {% block content %}
-  <h1>My page</h1>
+  <h1 class="title">회원정보 수정</h1>
+  <div class="mandatory">
+    <form>
+      <div class="mb-3">
+        <input placeholder="이름" type="name" class="form-control" id="inputUserName">
+      </div>
+      <div class="mb-3">
+        <input placeholder="이메일" type="email" class="form-control" id="inputEmail">
+      </div>
+      <div class="mb-3">
+        <input placeholder="새 비밀번호" type="password" class="form-control" id="inputNewPassword">
+
+      </div>
+      <div class="mb-3">
+        <input placeholder="새 비밀번호 확인" type="password" class="form-control" id="inputCheckNewPassword">
+      </div>
+      <hr>
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" type="button">수정하기</button>
+      </div>
+    </form>
+  </div>
 {% endblock %}

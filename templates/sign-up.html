@@ -16,5 +16,26 @@
 
 <!-- div=class"content" 부분 -->
 {% block content %}
-  <h1>회원가입</h1>
+  <h1 class="title">회원가입</h1>
+  <div class="mandatory">
+    <form>
+      <div class="mb-3">
+        <input placeholder="이름" type="name" class="form-control" id="inputUserName">
+      </div>
+      <div class="mb-3">
+        <input placeholder="이메일" type="email" class="form-control" id="inputEmail">
+      </div>
+      <div class="mb-3">
+        <input placeholder="비밀번호" type="password" class="form-control" id="inputPassword">
+
+      </div>
+      <div class="mb-3">
+        <input placeholder="비밀번호 확인" type="password" class="form-control" id="inputCheckPassword">
+      </div>
+      <hr>
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" type="button">회원가입</button>
+      </div>
+    </form>
+  </div>
 {% endblock %}
