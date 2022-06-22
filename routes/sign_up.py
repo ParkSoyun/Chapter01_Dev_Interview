@@ -1,9 +1,11 @@
 from flask import Blueprint
 from database import MongoDB
 import hashlib
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, redirect, url_for
 from dotenv import load_dotenv
+from werkzeug.utils import secure_filename
 import os
+import jwt
 
 
 # load env SECRET_KEY
@@ -18,7 +20,14 @@ sign_up = Blueprint('sign_up', __name__)
 
 @sign_up.route('/signup', methods=['GET'])
 def sign_up_get():
-    return render_template('sign-up.html')
+    token_receive = request.cookies.get('mytoken')
+    if token_receive is None:
+        return render_template('sign-up.html')
+    else:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        signin_status = True
+        user_info = db.user.find_one({"email": payload["id"]})
+        return render_template('sign-up.html', signin_status=signin_status, user_info=user_info)
 
 
 @sign_up.route('/signup', methods=['POST'])
