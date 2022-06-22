@@ -40,8 +40,3 @@ header {
 .is-danger{
     color: red;
 }
-
-.button-list > a {
-    text-decoration: none;
-    color: black;
-}

@@ -13,13 +13,9 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-<<<<<<< HEAD
-    <script src='{{url_for('static', filename='js/main.js')}}'></script>
-    <meta charset="UTF-8">
-=======
+
     <script src='{{url_for('static', filename='js/main.js')}}' type="text/javascript"></script>
 
->>>>>>> bcb99d1 (UPDATE: 메인페이지 관련 파일들)
     <link href='{{url_for('static', filename='css/styles.css')}}' rel="stylesheet" type="text/css"/>
     <link href="{{ url_for('static', filename='css/index_style.css') }}" rel="stylesheet" type="text/css">
 
@@ -51,8 +47,6 @@
         {% endif %}
     </header>
     {% endblock %}
-{#    <div class="content">{% block content %}{% endblock %}</div>#}
-    {% block content %}
-    {% endblock content %}
+    <div class="content">{% block content %}{% endblock %}</div>
 </body>
 </html>

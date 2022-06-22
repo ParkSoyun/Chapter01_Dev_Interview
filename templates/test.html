@@ -29,6 +29,29 @@
     </header>
 
     <div class="main-box" id="main-box">
+            <button onclick="prev_question()" type="button" class="btn btn-secondary next-button"><</button>
+
+            <div class="card text-center question-box">
+                <div class="card-header question-num">
+                    <h2>Question 1</h2>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title question">OOP에 대해서 설명하시오.</h3>
+                </div>
+            </div>
+
+            <div class="answer-box">
+                <textarea class="form-control answer" id="answerTextarea" placeholder="답변을 작성해보세요." rows="5"></textarea>
+                <button onclick="save_answer({{ question_info.num }})" type="button" class="btn btn-outline-dark">답변 등록</button>
+            </div>
+
+            <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button">></button>
+    </div>
+</body>
+</html>
+
+<!--
+    <div class="main-box" id="main-box">
         <button onclick="prev_question()" type="button" class="btn btn-secondary next-button"><</button>
 
         <div class="card text-center question-box">
@@ -65,5 +88,4 @@
 
         <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button">></button>
     </div>
-</body>
-</html>
+-->

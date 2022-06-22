@@ -1,40 +1,59 @@
+import os
+
+import jwt
+from dotenv import load_dotenv
 from flask import render_template, Blueprint, jsonify, request
 
 from datetime import datetime
 from database import MongoDB
 
+# load env SECRET_KEY
+load_dotenv()
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+# Connect DB
+db = MongoDB().db
+
 index = Blueprint('index', __name__)
+
+
+def make_unsolved_list(user_email):
+    solved_set = set(db.user.find({'email': user_email}, {'_id': False, 'solved': True})[0]['solved'])
+    total_question = db.question.estimated_document_count()
+    total_question_set = set(list(range(1, total_question + 1)))
+
+    unsolved_list = list(total_question_set.difference(solved_set))
+
+    return unsolved_list
 
 
 @index.route('/question', methods=["GET"])
 def show_question():
-    user_email = request.args.get('email')
-    print(user_email)
+    token_receive = request.cookies.get('mytoken')
 
-    if user_email is None:
-        total_question = MongoDB().db.question.estimated_document_count()
+    if token_receive is None:
+        question_info = db.question.find_one({'num': 1}, {'_id': False})
+        total_question = db.question.estimated_document_count()
 
         min_qn = 1
         max_qn = total_question
 
-        question_info = MongoDB().db.question.find_one({}, {'_id': False})
-
-        return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
-        # return render_template("index.html", question_info=question_info)
+        # return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
+        return render_template("index.html", question_info=question_info, min_qn=min_qn, max_qn=max_qn)
     else:
-        solved_set = set(MongoDB().db.user.find({'email': user_email}, {'_id': False, 'solved': True})[0]['solved'])
-        total_question = MongoDB().db.question.estimated_document_count()
-        total_question_set = set(list(range(1, total_question + 1)))
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_email = payload['id']
 
-        unsolved_list = list(total_question_set.difference(solved_set))
+        unsolved_list = make_unsolved_list(user_email)
         sorted_unsolved = sorted(unsolved_list)
 
         min_qn = min(sorted_unsolved)
         max_qn = max(sorted_unsolved)
 
-        question_info = MongoDB().db.question.find_one({'num': min_qn}, {'_id': False})
+        question_info = db.question.find_one({'num': min_qn}, {'_id': False})
 
-        return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
+        # return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
+        return render_template("index.html", question_info=question_info, min_qn=min_qn, max_qn=max_qn)
 
 
 @index.route('/prevquestion', methods=["GET"])
@@ -42,22 +61,17 @@ def prev_question():
     user_email = request.args.get('email')
     current_qn = int(request.args.get('current_qn'))
 
-    solved_set = set(MongoDB().db.user.find({'email': user_email}, {'_id': False, 'solved': True})[0]['solved'])
-    total_question = MongoDB().db.question.estimated_document_count()
-    total_question_set = set(list(range(1, total_question+1)))
-
-    unsolved_list = list(total_question_set.difference(solved_set))
+    unsolved_list = make_unsolved_list(user_email)
     reversed_unsolved = unsolved_list[::-1]
 
     min_qn = min(reversed_unsolved)
     max_qn = max(reversed_unsolved)
 
     for unsolved in reversed_unsolved:
-        print(unsolved, current_qn)
         if unsolved < current_qn:
             next_qn = unsolved
 
-            question_info = MongoDB().db.question.find_one({'num': next_qn}, {'_id': False})
+            question_info = db.question.find_one({'num': next_qn}, {'_id': False})
 
             return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
 
@@ -67,11 +81,7 @@ def next_question():
     user_email = request.args.get('email')
     current_qn = int(request.args.get('current_qn'))
 
-    solved_set = set(MongoDB().db.user.find({'email': user_email}, {'_id': False, 'solved': True})[0]['solved'])
-    total_question = MongoDB().db.question.estimated_document_count()
-    total_question_set = set(list(range(1, total_question+1)))
-
-    unsolved_list = list(total_question_set.difference(solved_set))
+    unsolved_list = make_unsolved_list(user_email)
     sorted_unsolved = sorted(unsolved_list)
 
     min_qn = min(sorted_unsolved)
@@ -81,18 +91,21 @@ def next_question():
         if unsolved > current_qn:
             next_qn = unsolved
 
-            question_info = MongoDB().db.question.find_one({'num': next_qn}, {'_id': False})
+            question_info = db.question.find_one({'num': next_qn}, {'_id': False})
 
             return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
 
 
 @index.route('/answer', methods=["POST"])
 def save_answer():
-    user_email = request.form['email']
+    token_receive = request.cookies.get('mytoken')
 
-    if user_email == '':
+    if token_receive is None:
         return save_answer_without_login()
     else:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_email = payload['id']
+
         return save_answer_with_login(user_email)
 
 
@@ -116,18 +129,50 @@ def save_answer_with_login(user_email):
         'like': []
     }
 
-    if MongoDB().db.answer.insert_one(answer):
-        MongoDB().db.user.update_one({'email': 'test@test.test'}, {'$push': {'solved': int(question_num)}})
+    if db.answer.insert_one(answer):
+        db.user.update_one({'email': 'test@test.test'}, {'$push': {'solved': int(question_num)}})
 
-        question_info = MongoDB().db.question.find_one({'num': question_num}, {'_id': False})
+        question_info = db.question.find_one({'num': question_num}, {'_id': False})
 
-        answer_list = list(MongoDB().db.answer.find({'question_num': question_num}, {'_id': False}))
+        # answer_list = list(db.answer.find({'question_num': question_num}, {'_id': False}))
 
+        temp_answer_list= list(db.answer.find({'question_num': question_num}, {'_id': False}).sort('like_count', -1))
 
-        # temp_answer_list = MongoDB().db.answer.find({'question_num': question_num}, {'_id': False}).sort({'like_count': -1})
-        #
-        # my_answer = sorted(temp_answer_list, key = lambda x: 'like_count')
+        answer_list = list()
+
+        for answer in temp_answer_list:
+            if answer['user_email'] == user_email:
+                answer_list.append(answer)
+                temp_answer_list.remove(answer)
+                break
+
+        for answer in temp_answer_list:
+            answer_list.append(answer)
 
         return jsonify({'msg': '답변 등록이 완료되었습니다.', 'question_info': question_info, 'answer_list': answer_list})
     else:
         return jsonify({'msg': '답변 등록에 실패하였습니다.'})
+
+
+@index.route('/answer', methods=["PUT"])
+def edit_answer():
+    flag = int(request.form['flag'])
+
+    if flag == 0:
+        answer_comment = request.form['answer_comment']
+
+        return jsonify({'msg': '답변을 수정합니다.', 'answer_comment': answer_comment})
+    else:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_email = payload['id']
+
+        question_num = int(request.form['question_num'])
+        new_answer = request.form['new_answer']
+
+        db.answer.update_one({'user_email': user_email, 'question_num': question_num}, {'$set': {'answer': new_answer}})
+
+        answer_info = db.answer.find_one({'user_email': user_email, 'question_num': question_num}, {'_id': False})
+
+        return jsonify({'answer_info': answer_info})
+

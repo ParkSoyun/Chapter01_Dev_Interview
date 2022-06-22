@@ -34,10 +34,16 @@ function get_userinfo(user){
 // });
 
 function show_question() {
+    // let token = document.cookie.split('=')[1]
+
     $.ajax({
         type: "GET",
         url: "/question",
         data: {},
+        // beforeSend: function (xhr) {
+        //     xhr.setRequestHeader("Content-type","application/json");
+        //     xhr.setRequestHeader("Authorization","JWT " + token);
+        // },
         success: function (response) {
             $('#main-box').empty()
 
@@ -92,7 +98,7 @@ function save_answer(questionNum) {
     $.ajax({
         type: "POST",
         url: "/answer",
-        data: {email: 'test@test.test', question_num: questionNum, answer: my_answer},
+        data: {question_num: questionNum, answer: my_answer},
         success: function (response) {
             alert(response["msg"])
 
@@ -119,6 +125,7 @@ function save_answer(questionNum) {
                                                             <th></th>
                                                             <td></td>
                                                             <td></td>
+                                                            <td></td>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table">`
@@ -128,23 +135,25 @@ function save_answer(questionNum) {
 
                 for(let i=0; i<answer_list.length; i++) {
                     let answer_comment = answer_list[i]['answer']
-                    let user_email = answer_list[i]['user_email']
+                    let like_count = answer_list[i]['like_count']
 
                     let answer_table = ``
 
-                    if(user_email === 'test@test.test') {
+                    if(i == 0) {
                         answer_table = `<tr>
-                                            <th class="answer-comment col-md-8">${answer_comment}</th>
+                                            <th class="answer-comment col-md-8" id="myanswer">${answer_comment}</th>
                                             <td class="my-td" id="edit_answer">
-                                                <button onclick="edit_answer()" type="button" class="btn btn-light">수정</button>
+                                                <button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>
                                             </td>
                                             <td class="my-td">🤍</td>
+                                            <td class="my-td like-count">${like_count}</td>
                                         </tr>`
                     } else {
                         answer_table = `<tr>
                                             <th class="answer-comment col-md-8">${answer_comment}</th>
                                             <td class="my-td"></td>
                                             <td class="my-td">🤍</td>
+                                            <td class="my-td like-count">${like_count}</td>
                                         </tr>`
                     }
 
@@ -162,6 +171,60 @@ function save_answer(questionNum) {
                 $('#main-box').append(question_card2)
                 $('#main-box').append(next_button)
             }
+        }
+    });
+}
+
+function edit_answer(question_num) {
+    let answer_comment = $('#myanswer').text()
+
+    $.ajax({
+        type: "PUT",
+        url: "/answer",
+        data: {
+            flag: 0,
+            answer_comment: answer_comment
+        },
+        success: function (response) {
+            $('#myanswer').empty()
+            $('#edit_answer').empty()
+
+            let answer = response['answer_comment']
+
+            console.log(answer)
+
+            let editbox = `<textarea class="form-control answer" id="answerTextarea" rows="5">${answer}</textarea>`
+            let editbutton = `<button onclick="send_new_answer(${question_num})" type="button" class="btn btn-light">수정</button>`
+
+            $('#myanswer').append(editbox)
+            $('#edit_answer').append(editbutton)
+        }
+    });
+}
+
+function send_new_answer(question_num) {
+    let new_answer = $('#answerTextarea').val()
+
+    $.ajax({
+        type: "PUT",
+        url: "/answer",
+        data: {
+            flag: 1,
+            question_num: question_num,
+            new_answer: new_answer
+        },
+        success: function (response) {
+            $('#myanswer').empty()
+            $('#edit_answer').empty()
+
+            let answer_info = response['answer_info']
+            let answer = answer_info['answer']
+
+            let editbox = `${answer}`
+            let editbutton = `<button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>`
+
+            $('#myanswer').append(editbox)
+            $('#edit_answer').append(editbutton)
         }
     });
 }
@@ -251,18 +314,16 @@ function sign_in() {
         success: function (response) {
             console.log(response['result'])
             if (response['result'] == 'success') {
-                $.cookie('mytoken', response['token'], {path: '/question'});
+                $.cookie('mytoken', response['token'], {path: '/'});
                 console.log($.cookie('mytoken', response['token'], {path: '/question'}))
-                //window.location.replace("/question")
+
+                window.location.replace("/question")
+                // window.location.replace("/")
             } else {
                 alert(response['msg'])
             }
         }
     });
-}
-
-function edit_answer() {
-
 }
 
 function prev_question(current_qn) {

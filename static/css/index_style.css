@@ -53,14 +53,20 @@
     resize: none;
 }
 .answer-comment {
-    width: 80%;
+    width: 70%;
     max-width: 80%;
     text-align: left;
 
     word-wrap: break-word;
     word-break: break-all;
+
+    vertical-align: middle;
 }
 .my-td {
     text-align: right;
     vertical-align: middle;
+}
+.like-count {
+    font-size: small;
+    color: gray;
 }
