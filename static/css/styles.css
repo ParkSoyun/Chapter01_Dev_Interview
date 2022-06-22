@@ -31,3 +31,17 @@ header {
     flex-direction : column;
     padding : 0 150px;
 }
+
+.help {
+    font-size: 0.7rem;
+    color: #808080;
+}
+
+.is-danger{
+    color: red;
+}
+
+.button-list > a {
+    text-decoration: none;
+    color: black;
+}
