@@ -9,12 +9,12 @@ my_page = Blueprint('my_page', __name__)
 
 
 @my_page.route("/check-userinfo", methods=["GET"])
-def check_user_page():
+def check_user_info_get():
     return render_template('check-user.html',signIn = True)
 
 
 @my_page.route("/check-userinfo", methods=["POST"])
-def check_user_info():
+def check_user_info_post():
     password_receive = request.form['password_give']
     user = list(db.user.find({'password' : password_receive}, {'_id': False}))
     if len(user) == 1:
