@@ -20,10 +20,10 @@
   <div class="mandatory">
     <form>
       <div class="mb-3">
-        <input placeholder="이름" type="name" class="form-control" id="inputUserName">
+        <input placeholder="이름" type="name" class="form-control" id="inputUserName" value="{{user_info["name"]}}">
       </div>
       <div class="mb-3">
-        <input placeholder="이메일" type="email" class="form-control" id="inputEmail">
+        <input placeholder="이메일" type="email" class="form-control" id="inputEmail" value="{{user_info["email"]}}" disabled readonly>
       </div>
       <div class="mb-3">
         <input placeholder="새 비밀번호" type="password" class="form-control" id="inputNewPassword">
@@ -32,9 +32,10 @@
       <div class="mb-3">
         <input placeholder="새 비밀번호 확인" type="password" class="form-control" id="inputCheckNewPassword">
       </div>
+      <p id="help-password" class="help is-hidden">영문과 숫자 조합, 8-20자로 설정. 특수문자(!@#$%^&*)도 사용 가능.</p>
       <hr>
       <div class="d-grid gap-2">
-        <button class="btn btn-primary" type="button">수정하기</button>
+        <button onclick="edit_userinfo()" class="btn btn-primary" type="button">수정하기</button>
       </div>
     </form>
   </div>
