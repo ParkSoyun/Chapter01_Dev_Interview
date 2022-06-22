@@ -41,7 +41,8 @@ header {
     color: red;
 }
 
-.button-list > a {
-    text-decoration: none;
-    color: black;
+.myquestions {
+    margin: 20px auto 0px auto;
+    width: 95%;
+    max-width: 1200px;
 }
