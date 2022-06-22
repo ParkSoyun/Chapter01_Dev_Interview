@@ -1,23 +1,19 @@
-from flask import Flask, render_template, request, jsonify
-from pymongo import MongoClient
-from dotenv import load_dotenv
-import os
+from flask import Flask, render_template, request
 
-# load .env
-load_dotenv()
-
-# Connect DB
-mongo_url = os.environ.get('MONGO_URL')
-client = MongoClient(mongo_url)
-db = client.dbsparta
+from routes.index import index
+from database import MongoDB
 
 app = Flask(__name__)
 
+app.register_blueprint(index)
 
 @app.route('/')
 def home():
-    return render_template('index.html', signIn = False)
+    question_info = MongoDB().db.question.find_one({}, {'_id': False})
 
+    return render_template("index.html", question_info=question_info)
+    # return render_template('index.html')
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
+
