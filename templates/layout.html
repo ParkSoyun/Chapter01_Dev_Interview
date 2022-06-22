@@ -19,23 +19,24 @@
     {% block header %}
     <header>
         <div class="project-name"><h1>Dev Interview</h1></div>
-        {% if signIn == True %}
+        {% if signin_status == True %}
         <div class="button-list">
-            <span class="user-name">OOO 님</span>
+            <span class="user-name">{{user_info["name"]}} 님</span>
             <div class="btn-group">
                 <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false"> My page
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/check-userinfo">회원정보 수정</a></li>
+                    <li><a class="dropdown-item" href="/checkuserinfo">회원정보 수정</a></li>
                     <li><a class="dropdown-item" href="#">답변 모아보기</a></li>
+                    <li><a class="dropdown-item" onclick="sign_out()">로그아웃</a></li>
                 </ul>
             </div>
         </div>
         {% else %}
         <div class="button-list">
-            <button type="button" class="btn btn-outline-dark"><a href="/signup">회원가입</a></button>
-            <button type="button" class="btn btn-outline-dark"><a href="/signin">로그인</a></button>
+            <button onclick="location.href = '/signup'" type="button" class="btn btn-outline-dark">회원가입</button>
+            <button onclick="location.href = '/signin'" type="button" class="btn btn-outline-dark">로그인</button>
         </div>
         {% endif %}
     </header>
