@@ -6,15 +6,42 @@
 
 <!-- head 태그 부분 -->
 {% block head %}
-  {{ super() }}
+    {{ super() }}
 {% endblock %}
 
 <!-- header 태그 부분 -->
 {% block header %}
-  {{ super() }}
+    {{ super() }}
 {% endblock %}
 
 <!-- div=class"content" 부분 -->
 {% block content %}
-  <h1>Index</h1>
+    <div class="main-box" id="main-box">
+        {% if question_info %}
+            {% if min_qn == question_info.num %}
+                <button onclick="prev_question()" type="button" class="btn btn-secondary next-button" disabled><</button>
+            {% else %}
+                <button onclick="prev_question()" type="button" class="btn btn-secondary next-button"><</button>
+            {% endif %}
+
+            <div class="card text-center question-box">
+                <div class="card-header question-num">
+                    <h2>Question {{ question_info.num }}</h2>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title question">{{ question_info.question }}</h3>
+                    <div class="answer-box">
+                        <textarea class="form-control answer" id="answerTextarea" placeholder="답변을 작성해보세요." rows="5"></textarea>
+                        <button onclick="save_answer({{ question_info.num }})" type="button" class="btn btn-outline-dark">답변 등록</button>
+                    </div>
+                </div>
+            </div>
+
+            {% if max_qn == question_info.num %}
+                <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button" disabled>></button>
+            {% else %}
+                <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button">></button>
+            {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}
