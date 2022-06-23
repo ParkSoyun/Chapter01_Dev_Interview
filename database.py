@@ -12,4 +12,4 @@ class MongoDB:
         ca = certifi.where()
         mongo_url = os.environ.get('MONGO_URL')
         self.client = MongoClient(mongo_url, tlsCAFile=ca)
-        self.db = self.client.dbsparta
+        self.db = self.client.dev_interview
