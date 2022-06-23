@@ -63,46 +63,71 @@ def show_question():
 @index.route('/prevquestion', methods=["GET"])
 def prev_question():
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_email = payload['id']
 
     current_qn = int(request.args.get('current_qn'))
 
-    unsolved_list = make_unsolved_list(user_email)
-    reversed_unsolved = unsolved_list[::-1]
+    if token_receive is None:
+        question_info = db.question.find_one({'num': current_qn-1}, {'_id': False})
+        total_question = db.question.estimated_document_count()
 
-    min_qn = min(reversed_unsolved)
-    max_qn = max(reversed_unsolved)
+        min_qn = 1
+        max_qn = total_question
 
-    for unsolved in reversed_unsolved:
-        if unsolved < current_qn:
-            next_qn = unsolved
+        # return render_template("index.html", question_info=question_info, min_qn=min_qn, max_qn=max_qn)
+        return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
 
-            question_info = db.question.find_one({'num': next_qn}, {'_id': False})
 
-            return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
+    else:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_email = payload['id']
+
+        unsolved_list = make_unsolved_list(user_email)
+        reversed_unsolved = unsolved_list[::-1]
+
+        min_qn = min(reversed_unsolved)
+        max_qn = max(reversed_unsolved)
+
+        for unsolved in reversed_unsolved:
+            if unsolved < current_qn:
+                next_qn = unsolved
+
+                question_info = db.question.find_one({'num': next_qn}, {'_id': False})
+
+                return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
 
 
 @index.route('/nextquestion', methods=["GET"])
 def next_question():
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_email = payload['id']
+
     current_qn = int(request.args.get('current_qn'))
 
-    unsolved_list = make_unsolved_list(user_email)
-    sorted_unsolved = sorted(unsolved_list)
+    if token_receive is None:
+        question_info = db.question.find_one({'num': current_qn + 1}, {'_id': False})
+        total_question = db.question.estimated_document_count()
 
-    min_qn = min(sorted_unsolved)
-    max_qn = max(sorted_unsolved)
+        min_qn = 1
+        max_qn = total_question
 
-    for unsolved in sorted_unsolved:
-        if unsolved > current_qn:
-            next_qn = unsolved
+        return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
+        # return render_template("index.html", question_info=question_info, min_qn=min_qn, max_qn=max_qn)
+    else:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_email = payload['id']
 
-            question_info = db.question.find_one({'num': next_qn}, {'_id': False})
+        unsolved_list = make_unsolved_list(user_email)
+        sorted_unsolved = sorted(unsolved_list)
 
-            return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
+        min_qn = min(sorted_unsolved)
+        max_qn = max(sorted_unsolved)
+
+        for unsolved in sorted_unsolved:
+            if unsolved > current_qn:
+                next_qn = unsolved
+
+                question_info = db.question.find_one({'num': next_qn}, {'_id': False})
+
+                return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
 
 
 @index.route('/answer', methods=["POST"])

@@ -526,6 +526,9 @@ function next_question(current_qn) {
             let max_qn = response['max_qn']
 
             let question_info = response['question_info']
+
+            console.log(response)
+
             let question_num = question_info['num']
             let question = question_info['question']
 
