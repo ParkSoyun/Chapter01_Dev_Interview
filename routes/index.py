@@ -62,7 +62,10 @@ def show_question():
 
 @index.route('/prevquestion', methods=["GET"])
 def prev_question():
-    user_email = request.args.get('email')
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_email = payload['id']
+
     current_qn = int(request.args.get('current_qn'))
 
     unsolved_list = make_unsolved_list(user_email)
@@ -82,7 +85,9 @@ def prev_question():
 
 @index.route('/nextquestion', methods=["GET"])
 def next_question():
-    user_email = request.args.get('email')
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_email = payload['id']
     current_qn = int(request.args.get('current_qn'))
 
     unsolved_list = make_unsolved_list(user_email)

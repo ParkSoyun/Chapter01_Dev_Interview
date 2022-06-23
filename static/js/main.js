@@ -205,63 +205,6 @@ function save_answer(question_num, min_qn, max_qn) {
     });
 }
 
-// $("input[name=btnradio]").click(function() {
-//     console.log('hihihihihihihi')
-//     let button_id = $(this).attr('id')
-//     let question_num = $(this).data('qn')
-//
-//      $.ajax({
-//         url: "/answer",
-//         method: "GET",
-//         data: {
-//             flag: button_id,
-//             question_num: question_num
-//         },
-//         success: function(response) {
-//             $('#table').empty()
-//
-//             let question_info = response['question_info']
-//             let question_num = question_info['num']
-//             let answer_list = response['answer_list']
-//
-//             for(let i=0; i<answer_list.length; i++) {
-//                 let answer_id = answer_list[i]['_id']
-//                 let answer_comment = answer_list[i]['answer']
-//                 let like_count = answer_list[i]['like_count']
-//
-//                 let button_id = 'button_' + answer_id
-//                 let count_id = 'count_' + answer_id
-//
-//                 let answer_table = ``
-//
-//                 if(i == 0) {
-//                     answer_table = `<tr>
-//                                         <th class="answer-comment col-md-8" id="myanswer">${answer_comment}</th>
-//                                         <td class="my-td" id="edit_answer">
-//                                             <button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>
-//                                         </td>
-//                                         <td class="my-td" id="${button_id}">
-//                                             <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
-//                                         </td>
-//                                         <td class="my-td like-count" id="${count_id}"}>${like_count}</td>
-//                                     </tr>`
-//                 } else {
-//                     answer_table = `<tr>
-//                                         <th class="answer-comment col-md-8">${answer_comment}</th>
-//                                         <td class="my-td"></td>
-//                                         <td class="my-td" id="${button_id}">
-//                                             <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
-//                                         </td>
-//                                         <td class="my-td like-count" id="${count_id}">${like_count}</td>
-//                                     </tr>`
-//                 }
-//
-//                 $('#table').append(answer_table)
-//             }
-//         }
-//     });
-// });
-
 function sort(question_num, sort_id) {
     $.ajax({
         type: "GET",
@@ -518,7 +461,9 @@ function prev_question(current_qn) {
     $.ajax({
         type: "GET",
         url: "/prevquestion",
-        data: {email: "test@test.test", current_qn: current_qn},
+        data: {
+            current_qn: current_qn
+        },
         success: function (response) {
             $('#main-box').empty()
 
@@ -571,7 +516,9 @@ function next_question(current_qn) {
     $.ajax({
         type: "GET",
         url: "/nextquestion",
-        data: {email: "test@test.test", current_qn: current_qn},
+        data: {
+            current_qn: current_qn
+        },
         success: function (response) {
             $('#main-box').empty()
 
