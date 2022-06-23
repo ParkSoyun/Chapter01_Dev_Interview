@@ -57,7 +57,7 @@ def show_question():
         question_info = db.question.find_one({'num': min_qn}, {'_id': False})
 
         # return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
-        return render_template("index.html", signIn=signin_status, user_info=user_info, question_info=question_info, min_qn=min_qn, max_qn=max_qn)
+        return render_template("index.html", signin_status=signin_status, user_info=user_info, question_info=question_info, min_qn=min_qn, max_qn=max_qn)
 
 
 @index.route('/prevquestion', methods=["GET"])

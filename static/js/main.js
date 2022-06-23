@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-// $(document).ready(function () {
-//     show_question();
-// });
-=======
 function check_user() {
     let password = $('#inputPassword').val()
     $.ajax({
@@ -82,7 +77,6 @@ function edit_userinfo(){
 $(document).ready(function () {
     // show_question();
 });
->>>>>>> soyun
 
 function show_question() {
     $.ajax({
@@ -137,21 +131,13 @@ function show_question() {
     });
 }
 
-<<<<<<< HEAD
-function save_answer(questionNum) {
-=======
 function save_answer(question_num, min_qn, max_qn) {
->>>>>>> soyun
     let my_answer = $('#answerTextarea').val()
 
     $.ajax({
         type: "POST",
         url: "/answer",
-<<<<<<< HEAD
-        data: {email: 'test@test.test', question_num: questionNum, answer: my_answer},
-=======
         data: {question_num: question_num, answer: my_answer},
->>>>>>> soyun
         success: function (response) {
             alert(response["msg"])
 
@@ -163,9 +149,6 @@ function save_answer(question_num, min_qn, max_qn) {
                 let question = question_info['question']
                 let answer_list = response['answer_list']
 
-<<<<<<< HEAD
-                let prev_button = `<button onclick="prev_question(${question_num})" type="button" class="btn btn-secondary next-button"><</button>`
-=======
                 let min_qn = response['min_qn']
                 let max_qn = response['max_qn']
 
@@ -179,7 +162,6 @@ function save_answer(question_num, min_qn, max_qn) {
                 } else {
                     prev_button = `<button onclick="prev_question(${question_num})" type="button" class="btn btn-secondary next-button"><</button>`
                 }
->>>>>>> soyun
 
                 let question_card1 = `<div class="card text-center question-box">
                                         <div class="card-header question-num">
@@ -187,9 +169,6 @@ function save_answer(question_num, min_qn, max_qn) {
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title question">${question}</h3>
-<<<<<<< HEAD
-                                            <div class="col-9 answer-box">
-=======
                                             
                                             <div class="col-9 answer-list-box">
                                                 <div class="sort-box">
@@ -202,18 +181,14 @@ function save_answer(question_num, min_qn, max_qn) {
                                                         <label class="btn btn-outline-dark" for="2">최신순</label>
                                                     </div>
                                                 </div>
-                                                
->>>>>>> soyun
+
                                                 <table class="table table-hover">
                                                     <thead>
                                                         <tr>
                                                             <th></th>
                                                             <td></td>
                                                             <td></td>
-<<<<<<< HEAD
-=======
                                                             <td></td>
->>>>>>> soyun
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table">`
@@ -222,20 +197,6 @@ function save_answer(question_num, min_qn, max_qn) {
                 $('#main-box').append(question_card1)
 
                 for(let i=0; i<answer_list.length; i++) {
-<<<<<<< HEAD
-                    let answer_comment = answer_list[i]['answer']
-                    let user_email = answer_list[i]['user_email']
-
-                    let answer_table = ``
-
-                    if(user_email === 'test@test.test') {
-                        answer_table = `<tr>
-                                            <th class="answer-comment col-md-8">${answer_comment}</th>
-                                            <td class="my-td" id="edit_answer">
-                                                <button onclick="edit_answer()" type="button" class="btn btn-light">수정</button>
-                                            </td>
-                                            <td class="my-td">🤍</td>
-=======
                     let answer_id = answer_list[i]['_id']
                     let answer_comment = answer_list[i]['answer']
                     let like_count = answer_list[i]['like_count']
@@ -255,20 +216,15 @@ function save_answer(question_num, min_qn, max_qn) {
                                                 <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
                                             </td>
                                             <td class="my-td like-count" id="${count_id}"}>${like_count}</td>
->>>>>>> soyun
                                         </tr>`
                     } else {
                         answer_table = `<tr>
                                             <th class="answer-comment col-md-8">${answer_comment}</th>
                                             <td class="my-td"></td>
-<<<<<<< HEAD
-                                            <td class="my-td">🤍</td>
-=======
                                             <td class="my-td" id="${button_id}">
                                                 <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
                                             </td>
                                             <td class="my-td like-count" id="${count_id}">${like_count}</td>
->>>>>>> soyun
                                         </tr>`
                     }
 
@@ -281,15 +237,11 @@ function save_answer(question_num, min_qn, max_qn) {
                             </div>
                         </div>`
 
-<<<<<<< HEAD
-                let next_button = `<button onclick="next_question(${question_num})" type="button" class="btn btn-secondary next-button">></button>`
-=======
                 if(max_qn == question_num) {
                     next_button = `<button onclick="next_question(${question_num})" type="button" class="btn btn-secondary next-button" disabled>></button>`
                 } else {
                     next_button = `<button onclick="next_question(${question_num})" type="button" class="btn btn-secondary next-button">></button>`
                 }
->>>>>>> soyun
 
                 $('#main-box').append(question_card2)
                 $('#main-box').append(next_button)
@@ -298,10 +250,6 @@ function save_answer(question_num, min_qn, max_qn) {
     });
 }
 
-<<<<<<< HEAD
-function edit_answer() {
-
-=======
 function sort(question_num, sort_id) {
     $.ajax({
         type: "GET",
@@ -542,33 +490,21 @@ function sign_in() {
         success: function (response) {
             if (response['result'] == 'success') {
                 $.cookie('mytoken', response['token'], {path: '/'});
-<<<<<<< HEAD
                 window.location.replace("/question")
-=======
-                console.log($.cookie('mytoken', response['token'], {path: '/question'}))
-
-                window.location.replace("/question")
-                // window.location.replace("/")
->>>>>>> master
             } else {
                 alert(response['msg'])
             }
         }
     });
->>>>>>> soyun
 }
 
 function prev_question(current_qn) {
     $.ajax({
         type: "GET",
         url: "/prevquestion",
-<<<<<<< HEAD
-        data: {email: "test@test.test", current_qn: current_qn},
-=======
         data: {
             current_qn: current_qn
         },
->>>>>>> soyun
         success: function (response) {
             $('#main-box').empty()
 
@@ -621,13 +557,9 @@ function next_question(current_qn) {
     $.ajax({
         type: "GET",
         url: "/nextquestion",
-<<<<<<< HEAD
-        data: {email: "test@test.test", current_qn: current_qn},
-=======
         data: {
             current_qn: current_qn
         },
->>>>>>> soyun
         success: function (response) {
             $('#main-box').empty()
 
@@ -635,12 +567,7 @@ function next_question(current_qn) {
             let max_qn = response['max_qn']
 
             let question_info = response['question_info']
-<<<<<<< HEAD
-=======
 
-            console.log(response)
-
->>>>>>> soyun
             let question_num = question_info['num']
             let question = question_info['question']
 
@@ -680,18 +607,10 @@ function next_question(current_qn) {
             console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         },
     });
-<<<<<<< HEAD
 }
-
-=======
-}
-<<<<<<< HEAD
 
 function sign_out() {
     $.removeCookie('mytoken', {path: '/'});
     alert('로그아웃!')
     window.location.href = "/signin"
 }
-=======
->>>>>>> soyun
->>>>>>> master
