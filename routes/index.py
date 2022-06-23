@@ -162,7 +162,7 @@ def save_answer_with_login(user_email):
     }
 
     if db.answer.insert_one(answer):
-        db.user.update_one({'email': 'test@test.test'}, {'$push': {'solved': int(question_num)}})
+        db.user.update_one({'email': user_email}, {'$push': {'solved': int(question_num)}})
 
         question_info = db.question.find_one({'num': question_num}, {'_id': False})
 
