@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en">
+=======
+<body lang="en">
+>>>>>>> soyun
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,6 +23,41 @@
     <title>{% block title %}{% endblock %} - Dev Interview</title>
 </head>
 
+<<<<<<< HEAD
+=======
+<!--
+<body>
+    <header>
+        <div class="project-name"><h1>Dev Interview</h1></div>
+        <div class="button-list">
+            <button type="button" class="btn btn-outline-dark">회원가입</button>
+            <button type="button" class="btn btn-outline-dark">로그인</button>
+        </div>
+    </header>
+
+    <div class="main-box" id="main-box">
+            <button onclick="prev_question()" type="button" class="btn btn-secondary next-button"><</button>
+
+            <div class="card text-center question-box">
+                <div class="card-header question-num">
+                    <h2>Question 1</h2>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title question">OOP에 대해서 설명하시오.</h3>
+                </div>
+            </div>
+
+            <div class="answer-box">
+                <textarea class="form-control answer" id="answerTextarea" placeholder="답변을 작성해보세요." rows="5"></textarea>
+                <button onclick="save_answer({{ question_info.num }})" type="button" class="btn btn-outline-dark">답변 등록</button>
+            </div>
+
+            <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button">></button>
+    </div>
+</body>
+</html>
+-->
+>>>>>>> soyun
 <body>
     <header>
         <div class="project-name"><h1>Dev Interview</h1></div>
@@ -37,7 +76,27 @@
             </div>
             <div class="card-body">
                 <h3 class="card-title question">OOP에 대하여 설명하시오.</h3>
+<<<<<<< HEAD
                 <div class="col-9 answer-box">
+=======
+
+
+
+                <div class="col-9 answer-list-box">
+                    <div class="col-9 answer-list-box">
+                        <div class="sort-box">
+                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                <input type="radio" class="btn-check" name="btnradio" id="1" autocomplete="off" data-qn="${question_num}"
+                                       checked>
+                                <label class="btn btn-outline-dark" for="1">인기순</label>
+
+                                <input type="radio" class="btn-check" name="btnradio" id="2" autocomplete="off" data-qn="${question_num}">
+                                <label class="btn btn-outline-dark" for="2">최신순</label>
+                            </div>
+                        </div>
+                    </div>
+
+>>>>>>> soyun
                     <table class="table table-hover">
                         <thead>
                             <tr>

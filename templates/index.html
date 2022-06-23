@@ -18,7 +18,15 @@
 {% block content %}
     <div class="main-box" id="main-box">
         {% if question_info %}
+<<<<<<< HEAD
             <button onclick="prev_question()" type="button" class="btn btn-secondary next-button"><</button>
+=======
+            {% if min_qn == question_info.num %}
+                <button onclick="prev_question()" type="button" class="btn btn-secondary next-button" disabled><</button>
+            {% else %}
+                <button onclick="prev_question()" type="button" class="btn btn-secondary next-button"><</button>
+            {% endif %}
+>>>>>>> soyun
 
             <div class="card text-center question-box">
                 <div class="card-header question-num">
@@ -33,7 +41,15 @@
                 </div>
             </div>
 
+<<<<<<< HEAD
             <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button">></button>
+=======
+            {% if max_qn == question_info.num %}
+                <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button" disabled>></button>
+            {% else %}
+                <button onclick="next_question({{ question_info.num }})" type="button" class="btn btn-secondary next-button">></button>
+            {% endif %}
+>>>>>>> soyun
         {% endif %}
     </div>
 {% endblock %}

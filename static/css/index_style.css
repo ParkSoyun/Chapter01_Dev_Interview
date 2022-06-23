@@ -45,6 +45,17 @@
     align-items: center;
     justify-content: center;
 }
+<<<<<<< HEAD
+=======
+.answer-list-box {
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: center;
+}
+>>>>>>> soyun
 .answer {
     width: 80%;
 
@@ -53,14 +64,37 @@
     resize: none;
 }
 .answer-comment {
+<<<<<<< HEAD
     width: 80%;
+=======
+    width: 70%;
+>>>>>>> soyun
     max-width: 80%;
     text-align: left;
 
     word-wrap: break-word;
     word-break: break-all;
+<<<<<<< HEAD
+=======
+
+    vertical-align: middle;
+>>>>>>> soyun
 }
 .my-td {
     text-align: right;
     vertical-align: middle;
+<<<<<<< HEAD
 }
+=======
+}
+.like-count {
+    font-size: small;
+    color: gray;
+}
+.sort-box {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: center;
+}
+>>>>>>> soyun

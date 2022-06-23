@@ -16,5 +16,28 @@
 
 <!-- div=class"content" 부분 -->
 {% block content %}
-  <h1>회원가입</h1>
+  <h1 class="title">회원가입</h1>
+  <div class="mandatory">
+    <form>
+      <div class="mb-3">
+        <input placeholder="이름" type="name" class="form-control" id="inputUserName">
+      </div>
+      <div class="mb-3">
+        <input placeholder="이메일" type="email" class="form-control" id="inputEmail">
+      </div>
+      <p id="help-email" class="help is-hidden">이메일 형식으로 입력해주세요.</p>
+      <div class="mb-3">
+        <input placeholder="비밀번호" type="password" class="form-control" id="inputPassword">
+      </div>
+      <div class="mb-3">
+        <input placeholder="비밀번호 확인" type="password" class="form-control" id="inputCheckPassword">
+      </div>
+      <p id="help-password" class="help is-hidden">영문과 숫자 조합, 8-20자로 설정. 특수문자(!@#$%^&*)도 사용 가능.</p>
+      <p id="help-password-login" class="help is-danger"></p>
+      <hr>
+      <div class="d-grid gap-2">
+        <button onclick="sign_up()" class="btn btn-primary" type="button">회원가입</button>
+      </div>
+    </form>
+  </div>
 {% endblock %}
