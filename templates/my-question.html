@@ -6,15 +6,32 @@
 
 <!-- head 태그 부분 -->
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 
 <!-- header 태그 부분 -->
 {% block header %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 
 <!-- div=class"content" 부분 -->
 {% block content %}
-  <h1>답변 모아보기</h1>
+<h1 class="title">답변 모아보기</h1>
+<div class="myquestions">
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for question in question_list %}
+        <div class="col">
+            <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header">Question{{ question[0] }}</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ question[1] }}</h5>
+                    <p class="card-text">{{ question[2] }}</p>
+                    <p class="card-text">좋아요 수 {{ question[3] }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
+
