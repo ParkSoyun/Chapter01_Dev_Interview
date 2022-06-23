@@ -42,8 +42,11 @@ def show_question():
         # return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
         return render_template("index.html", question_info=question_info, min_qn=min_qn, max_qn=max_qn)
     else:
+        signin_status = True
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_email = payload['id']
+
+        user_info = db.user.find_one({'email': user_email})
 
         unsolved_list = make_unsolved_list(user_email)
         sorted_unsolved = sorted(unsolved_list)
@@ -54,7 +57,7 @@ def show_question():
         question_info = db.question.find_one({'num': min_qn}, {'_id': False})
 
         # return jsonify({'question_info': question_info, 'min_qn': min_qn, 'max_qn': max_qn})
-        return render_template("index.html", question_info=question_info, min_qn=min_qn, max_qn=max_qn)
+        return render_template("index.html", signIn=signin_status, user_info=user_info, question_info=question_info, min_qn=min_qn, max_qn=max_qn)
 
 
 @index.route('/prevquestion', methods=["GET"])
@@ -152,9 +155,66 @@ def save_answer_with_login(user_email):
         for answer in temp_answer_list:
             answer_list.append(answer)
 
-        return jsonify({'msg': '답변 등록이 완료되었습니다.', 'question_info': question_info, 'answer_list': answer_list})
+        unsolved_list = make_unsolved_list(user_email)
+
+        min_qn = min(unsolved_list)
+        max_qn = max(unsolved_list)
+
+        return jsonify({'msg': '답변 등록이 완료되었습니다.', 'question_info': question_info, 'answer_list': answer_list, 'min_qn': min_qn, 'max_qn': max_qn})
     else:
         return jsonify({'msg': '답변 등록에 실패하였습니다.'})
+
+
+@index.route('/answer', methods=["GET"])
+def sort_answer():
+    flag = int(request.args.get('flag'))
+    question_num = int(request.args.get('question_num'))
+
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_email = payload['id']
+
+    if flag == 1:
+        question_info = db.question.find_one({'num': question_num}, {'_id': False})
+
+        temp_answer_list = list(db.answer.find({'question_num': question_num}).sort('like_count', -1))
+
+        for temp_answer in temp_answer_list:
+            temp_answer['_id'] = str(temp_answer['_id'])
+
+        answer_list = list()
+
+        for answer in temp_answer_list:
+            if answer['user_email'] == user_email:
+                answer_list.append(answer)
+                temp_answer_list.remove(answer)
+                break
+
+        for answer in temp_answer_list:
+            answer_list.append(answer)
+
+        return jsonify({'question_info': question_info, 'answer_list': answer_list})
+    elif flag == 2:
+        question_info = db.question.find_one({'num': question_num}, {'_id': False})
+
+        temp_answer_list = list(db.answer.find({'question_num': question_num}).sort('created_at', -1))
+
+
+        for temp_answer in temp_answer_list:
+            temp_answer['_id'] = str(temp_answer['_id'])
+
+        # answer_list = list()
+        #
+        # for answer in temp_answer_list:
+        #     if answer['user_email'] == user_email:
+        #         answer_list.append(answer)
+        #         temp_answer_list.remove(answer)
+        #         break
+        #
+        # for answer in temp_answer_list:
+        #     answer_list.append(answer)
+
+        return jsonify({'question_info': question_info, 'answer_list': temp_answer_list})
 
 
 @index.route('/answer', methods=["PUT"])

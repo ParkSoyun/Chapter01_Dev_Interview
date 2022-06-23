@@ -45,6 +45,14 @@
     align-items: center;
     justify-content: center;
 }
+.answer-list-box {
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: center;
+}
 .answer {
     width: 80%;
 
@@ -69,4 +77,10 @@
 .like-count {
     font-size: small;
     color: gray;
+}
+.sort-box {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: center;
 }

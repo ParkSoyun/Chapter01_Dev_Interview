@@ -29,9 +29,9 @@ function get_userinfo(user){
     });
 }
 
-// $(document).ready(function () {
-//     show_question();
-// });
+$(document).ready(function () {
+    // show_question();
+});
 
 function show_question() {
     $.ajax({
@@ -86,13 +86,13 @@ function show_question() {
     });
 }
 
-function save_answer(questionNum) {
+function save_answer(question_num, min_qn, max_qn) {
     let my_answer = $('#answerTextarea').val()
 
     $.ajax({
         type: "POST",
         url: "/answer",
-        data: {question_num: questionNum, answer: my_answer},
+        data: {question_num: question_num, answer: my_answer},
         success: function (response) {
             alert(response["msg"])
 
@@ -104,7 +104,19 @@ function save_answer(questionNum) {
                 let question = question_info['question']
                 let answer_list = response['answer_list']
 
-                let prev_button = `<button onclick="prev_question(${question_num})" type="button" class="btn btn-secondary next-button"><</button>`
+                let min_qn = response['min_qn']
+                let max_qn = response['max_qn']
+
+                let prev_button = ``
+                let next_button = ``
+
+                console.log(min_qn, question_num, max_qn)
+
+                if(min_qn >= question_num) {
+                    prev_button = `<button onclick="prev_question(${question_num})" type="button" class="btn btn-secondary next-button" disabled><</button>`
+                } else {
+                    prev_button = `<button onclick="prev_question(${question_num})" type="button" class="btn btn-secondary next-button"><</button>`
+                }
 
                 let question_card1 = `<div class="card text-center question-box">
                                         <div class="card-header question-num">
@@ -112,7 +124,19 @@ function save_answer(questionNum) {
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title question">${question}</h3>
-                                            <div class="col-9 answer-box">
+                                            
+                                            <div class="col-9 answer-list-box">
+                                                <div class="sort-box">
+                                                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                                        <input type="radio" class="btn-check" name="btnradio" id="1" autocomplete="off" data-qn="${question_num}"
+                                                               onclick="sort(${question_num}, 1)" checked>
+                                                        <label class="btn btn-outline-dark" for="1">인기순</label>
+                            
+                                                        <input type="radio" class="btn-check" name="btnradio" id="2" autocomplete="off" data-qn="${question_num}" onclick="sort(${question_num}, 2)">
+                                                        <label class="btn btn-outline-dark" for="2">최신순</label>
+                                                    </div>
+                                                </div>
+                                                
                                                 <table class="table table-hover">
                                                     <thead>
                                                         <tr>
@@ -168,10 +192,124 @@ function save_answer(questionNum) {
                             </div>
                         </div>`
 
-                let next_button = `<button onclick="next_question(${question_num})" type="button" class="btn btn-secondary next-button">></button>`
+                if(max_qn == question_num) {
+                    next_button = `<button onclick="next_question(${question_num})" type="button" class="btn btn-secondary next-button" disabled>></button>`
+                } else {
+                    next_button = `<button onclick="next_question(${question_num})" type="button" class="btn btn-secondary next-button">></button>`
+                }
 
                 $('#main-box').append(question_card2)
                 $('#main-box').append(next_button)
+            }
+        }
+    });
+}
+
+// $("input[name=btnradio]").click(function() {
+//     console.log('hihihihihihihi')
+//     let button_id = $(this).attr('id')
+//     let question_num = $(this).data('qn')
+//
+//      $.ajax({
+//         url: "/answer",
+//         method: "GET",
+//         data: {
+//             flag: button_id,
+//             question_num: question_num
+//         },
+//         success: function(response) {
+//             $('#table').empty()
+//
+//             let question_info = response['question_info']
+//             let question_num = question_info['num']
+//             let answer_list = response['answer_list']
+//
+//             for(let i=0; i<answer_list.length; i++) {
+//                 let answer_id = answer_list[i]['_id']
+//                 let answer_comment = answer_list[i]['answer']
+//                 let like_count = answer_list[i]['like_count']
+//
+//                 let button_id = 'button_' + answer_id
+//                 let count_id = 'count_' + answer_id
+//
+//                 let answer_table = ``
+//
+//                 if(i == 0) {
+//                     answer_table = `<tr>
+//                                         <th class="answer-comment col-md-8" id="myanswer">${answer_comment}</th>
+//                                         <td class="my-td" id="edit_answer">
+//                                             <button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>
+//                                         </td>
+//                                         <td class="my-td" id="${button_id}">
+//                                             <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
+//                                         </td>
+//                                         <td class="my-td like-count" id="${count_id}"}>${like_count}</td>
+//                                     </tr>`
+//                 } else {
+//                     answer_table = `<tr>
+//                                         <th class="answer-comment col-md-8">${answer_comment}</th>
+//                                         <td class="my-td"></td>
+//                                         <td class="my-td" id="${button_id}">
+//                                             <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
+//                                         </td>
+//                                         <td class="my-td like-count" id="${count_id}">${like_count}</td>
+//                                     </tr>`
+//                 }
+//
+//                 $('#table').append(answer_table)
+//             }
+//         }
+//     });
+// });
+
+function sort(question_num, sort_id) {
+    $.ajax({
+        type: "GET",
+        url: "/answer",
+        data: {
+            flag: sort_id,
+            question_num: question_num
+        },
+        success: function (response) {
+            $('#table').empty()
+
+            let question_info = response['question_info']
+            let question_num = question_info['num']
+            let answer_list = response['answer_list']
+
+            for(let i=0; i<answer_list.length; i++) {
+                let answer_id = answer_list[i]['_id']
+                let answer_comment = answer_list[i]['answer']
+                let like_count = answer_list[i]['like_count']
+
+                let button_id = 'button_' + answer_id
+                let count_id = 'count_' + answer_id
+
+                let answer_table = ``
+
+                if(i == 0) {
+                    answer_table = `<tr>
+                                        <th class="answer-comment col-md-8" id="myanswer">${answer_comment}</th>
+                                        <td class="my-td" id="edit_answer">
+                                            <button onclick="edit_answer(${question_num})" type="button" class="btn btn-light">수정</button>
+                                        </td>
+                                        <td class="my-td" id="${button_id}">
+                                            <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
+                                        </td>
+                                        <td class="my-td like-count" id="${count_id}"}>${like_count}</td>
+                                    </tr>`
+                } else {
+                    answer_table = `<tr>
+                                        <th class="answer-comment col-md-8">${answer_comment}</th>
+                                        <td class="my-td"></td>
+                                        <td class="my-td" id="${button_id}">
+                                            <button onclick="like_answer('${button_id}', '${count_id}', '${answer_id}')" type="button" class="btn btn-light">🤍</button>
+                                        </td>
+                                        <td class="my-td like-count" id="${count_id}">${like_count}</td>
+                                    </tr>`
+                }
+
+                $('#table').append(answer_table)
             }
         }
     });
